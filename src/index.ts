@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Terminal } from './src/cli/terminal.js';
+import { Terminal } from './cli/terminal.js';
 import { select } from '@inquirer/prompts';
 import {
   promptHookSelection,
@@ -11,10 +11,10 @@ import {
   displayConfiguration,
   promptRemovalSelection,
   promptRemovalConfirmation,
-} from './src/cli/prompts.js';
-import { ClaudeSettings } from './src/config/settings.js';
-import { createNotificationCommand, isNotificationSupported } from './src/platforms/index.js';
-import { handleError, UserCancelledError, UnsupportedPlatformError, InvalidInputError } from './src/utils/errors.js';
+} from './cli/prompts.js';
+import { ClaudeSettings } from './config/settings.js';
+import { createNotificationCommand, isNotificationSupported } from './platforms/index.js';
+import { handleError, UserCancelledError, UnsupportedPlatformError, InvalidInputError } from './utils/errors.js';
 import {
   HookConfiguration,
   ClaudeHooks,
@@ -23,7 +23,7 @@ import {
   HookAction,
   ConfirmationAction,
   MainMenuAction,
-} from './src/types/index.js';
+} from './types/index.js';
 
 /**
  * Main application function
@@ -169,7 +169,8 @@ async function handleRemove(): Promise<void> {
   }
 
   // Simply show which hooks are available for removal
-  console.log(`\n🗑️ Found ${installedHooks.length} notification(s) to remove`);
+  console.log(`
+🗑️ Found ${installedHooks.length} notification(s) to remove`);
 
   // Prompt for removal selection
   const hooksToRemove = await promptRemovalSelection(installedHooks);
