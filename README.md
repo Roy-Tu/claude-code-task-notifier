@@ -1,144 +1,181 @@
-# Claude Code Hook Notifier
+# Claude Code Task Notifier
 
-A modern TypeScript CLI tool that sets up native desktop notifications for Claude Code task events. Features a robust modular architecture with enhanced security, comprehensive error handling, and cross-platform support.
+> **Never miss when your AI tasks complete again!**
+
+Get instant native desktop notifications when Claude Code tasks finish or stop. A modern TypeScript CLI with beautiful interactive interface and cross-platform support.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-43853D?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
-## 🚀 Quick Start
+---
 
-### Installation & Usage
+## 🎬 See It In Action
+
+<!-- TODO: Add demo GIF here -->
+> **Demo coming soon!** Screenshots and animated GIF showing the interactive interface and notifications.
+
+<!-- Placeholder for demo images -->
+<div align="center">
+  <img src="docs/images/demo-main-menu.png" alt="Interactive Main Menu" width="500" />
+  <br />
+  <em>Beautiful interactive interface with arrow-key navigation</em>
+</div>
+
+<br />
+
+<div align="center">
+  <img src="docs/images/demo-notification.png" alt="Desktop Notification" width="400" />
+  <br />
+  <em>Native desktop notifications on Windows and macOS</em>
+</div>
+
+---
+
+## ⚡ Quick Start
 
 ```bash
 # Install dependencies
 npm install
 
-# Build the TypeScript project
-npm run build
-
-# Run the interactive CLI
-npm start
+# Build and run
+npm run build && npm start
 ```
 
-### Development Mode
-
+**Or clone and setup:**
 ```bash
-# Watch mode with auto-recompilation
-npm run dev
-
-# Type checking only
-npm run typecheck
+git clone https://github.com/Roy-Tu/claude-code-task-notifier.git
+cd claude-code-task-notifier
+npm install && npm start
 ```
 
-This opens an interactive setup process to configure your notification hooks with full type safety.
+---
 
-## ✨ Features
+## ✨ What This Tool Does
 
-- **🔷 TypeScript First:** Full type safety with strict TypeScript configuration
-- **🖥️ Cross-Platform:** Native notifications on macOS and Windows
-- **🛡️ Enhanced Security:** Input sanitization and safe command generation
-- **🏗️ Modern Architecture:** Clean, modular codebase with enum structures
-- **🔄 Error Recovery:** Comprehensive error handling with user-friendly messages
-- **🎛️ Interactive CLI:** Intuitive setup process with confirmation prompts
-- **📦 Modern Build System:** TypeScript compilation with watch mode support
+### 🎯 **The Problem**
+Working with Claude Code but missing when tasks complete because you're in another app?
 
-## How it Works
+### 🚀 **The Solution**
+- ✅ **Task completion notifications** - Know instantly when AI tasks finish
+- 🛑 **Task stop alerts** - Get notified when tasks are cancelled
+- 🔊 **Optional sound alerts** - Audio notifications on macOS
+- 🖥️ **Cross-platform** - Works on Windows and macOS
 
-The tool detects your operating system and generates secure notification commands that are added to your Claude Code `settings.json` file.
+---
 
-### Platform Support
+## 🎛️ Features
 
-- **macOS:** Uses `osascript` to display native notifications with optional sound
-- **Windows:** Uses PowerShell with `System.Windows.Forms.NotifyIcon` for balloon tip notifications
+### **Interactive Management**
+- **📋 View Configuration** - Check current settings at a glance
+- **⚙️ Install Notifications** - Easy setup with guided prompts
+- **🗑️ Remove Notifications** - Clean removal of specific hooks
+- **🔄 Arrow-key Navigation** - Consistent UX throughout
 
-### Configuration File Location
+### **Smart & Secure**
+- **🛡️ Input Sanitization** - All commands are safely generated
+- **🔷 TypeScript First** - Full type safety and modern architecture
+- **⚙️ Platform Detection** - Automatically adapts to your OS
+- **💾 Persistent Settings** - Integrates with Claude Code's settings.json
 
-- **Windows:** `%USERPROFILE%\.claude\settings.json`
-- **macOS/Linux:** `~/.claude/settings.json`
+### **Cross-Platform Support**
+| Platform | Notifications | Sound | Implementation |
+|----------|---------------|-------|---------------|
+| **Windows** | ✅ Native | ❌ | PowerShell + WinForms |
+| **macOS** | ✅ Native | ✅ | osascript + AppleScript |
+| **Linux** | 🚧 Coming Soon | 🚧 | notify-send |
 
-## 🏗️ Architecture
+---
 
-Modern TypeScript architecture with enhanced type safety:
+## 🎮 How It Works
+
+### **1. Interactive Setup**
+Run `npm start` to launch the beautiful CLI interface:
 
 ```
-├── index.ts                 # Main TypeScript entry point
-├── dist/                    # Compiled JavaScript output
-├── src/
-│   ├── types/              # Central type definitions & enums
-│   ├── platforms/          # Platform implementations (.ts)
-│   ├── config/             # Settings management
-│   ├── cli/                # CLI components
-│   └── utils/              # Error handling & utilities
-└── docs/                   # Documentation
+📋 View Current Configuration
+⚙️ Install Notifications
+🗑️ Remove Notifications
+❌ Exit
 ```
 
-### Key TypeScript Features
+### **2. Choose Your Notifications**
+Select which events you want to be notified about:
+- Task completion alerts
+- Task stop/cancellation alerts
 
-- **🔷 Strict Type Safety:** Full TypeScript with strict mode enabled
-- **📋 Enum Structures:** Type-safe actions, platforms, and error codes
-- **🏭 Abstract Classes:** Clean inheritance with proper override decorators
-- **🛡️ Type Guards:** Runtime type validation with compile-time safety
-- **📦 Modern Build:** ES2022 target with ESNext modules
+### **3. Sound Preferences** (macOS only)
+Choose whether to include sound with your notifications.
 
-## Security Features
+### **4. Automatic Integration**
+The tool safely updates your Claude Code `settings.json` with the notification hooks.
 
-- **Input Sanitization:** All user inputs are sanitized before use in commands
-- **Safe Command Generation:** Commands are generated using known safe patterns
-- **Platform-Specific Security:** Each platform implements appropriate sanitization
-- **No Code Injection:** Commands are generated by our code, not user input
+---
 
-## 🛠️ Development
+## 📋 Requirements
 
-### Build Commands
+- **Node.js** 18.0.0 or higher
+- **Claude Code** (properly installed)
+- **Windows** (PowerShell) or **macOS** (osascript)
 
-| Command | Description |
-|---------|-------------|
-| `npm run build` | Compile TypeScript to JavaScript |
-| `npm run dev` | Watch mode - recompile on changes |
-| `npm run typecheck` | Type checking without compilation |
-| `npm run clean` | Remove dist/ folder |
-| `npm start` | Run the compiled application |
+---
 
-### TypeScript Setup
+## 📚 Documentation
 
-The project uses strict TypeScript configuration:
-- **Target:** ES2022 with ESNext modules
-- **Strict Mode:** All strict checks enabled
-- **Declaration Maps:** Full source map support
-- **Module Resolution:** Node16 for modern imports
+- **[🔧 Contributing Guide](docs/CONTRIBUTING.md)** - How to contribute to the project
+- **[🚨 Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[🏗️ Architecture](docs/ARCHITECTURE.md)** - Technical implementation details
+- **[💻 Development](docs/DEVELOPMENT.md)** - Local development setup
 
-See [`docs/TYPESCRIPT_MIGRATION.md`](./docs/TYPESCRIPT_MIGRATION.md) for migration details.
+---
 
-### Adding New Platforms
+## 🌟 Why Choose This Tool?
 
-Extend the type-safe platform system:
+### **For Developers**
+- **Stay Productive** - Work in other apps without missing task completions
+- **Focus Mode** - No need to constantly check Claude Code status
+- **Zero Configuration** - Works out of the box with smart defaults
 
-```typescript
-// src/platforms/linux.ts
-import { NotificationPlatform } from './base.js';
-import { Platform } from '../types/index.js';
+### **For Teams**
+- **Shared Workflows** - Team members know when AI tasks complete
+- **Collaborative AI** - Better coordination on shared AI projects
+- **Professional Integration** - Enterprise-grade security and reliability
 
-export class LinuxPlatform extends NotificationPlatform {
-    override isSupported(): boolean {
-        return process.platform === 'linux';
-    }
+### **Technical Excellence**
+- **Modern TypeScript** - Strict typing and latest language features
+- **Security First** - All user inputs sanitized, no code injection risks
+- **Clean Architecture** - Modular, testable, and maintainable code
+- **Cross-Platform** - Native implementation for each operating system
 
-    override getPlatformId(): Platform {
-        return Platform.LINUX;
-    }
+---
 
-    override createCommand(action: HookAction, withSound: boolean): string {
-        // Implementation for Linux notifications
-    }
-}
-```
+## 🤝 Contributing
 
-## Contributing
+We welcome contributions! Please see our [Contributing Guide](docs/CONTRIBUTING.md) for details.
 
-This project follows clean architecture principles. When contributing:
+**Quick ways to help:**
+- 🐛 [Report bugs](https://github.com/Roy-Tu/claude-code-task-notifier/issues)
+- 💡 [Request features](https://github.com/Roy-Tu/claude-code-task-notifier/discussions)
+- 🔧 [Submit pull requests](https://github.com/Roy-Tu/claude-code-task-notifier/pulls)
+- 📖 [Improve documentation](docs/)
 
-- Maintain separation of concerns
-- Add appropriate error handling and input sanitization
-- Follow security best practices
-- Update tests and documentation
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+---
+
+<div align="center">
+
+**⭐ If this tool helps your workflow, please give it a star!**
+
+[📱 View Demo](docs/images/) • [🐛 Report Bug](https://github.com/Roy-Tu/claude-code-task-notifier/issues) • [💬 Discussions](https://github.com/Roy-Tu/claude-code-task-notifier/discussions)
+
+---
+
+*Made with ❤️ for the Claude Code community*
+
+</div>
