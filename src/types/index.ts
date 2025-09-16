@@ -48,6 +48,7 @@ export enum SettingsOperation {
   MERGE_HOOKS = 'mergeHooks',
   GET_DATA = 'getData',
   GET_HOOKS = 'getHooks',
+  REMOVE_HOOKS = 'removeHooks',
 }
 
 /**
@@ -67,6 +68,17 @@ export enum ConfirmationAction {
   INSTALL = 'install',
   EXIT = 'exit',
 }
+
+/**
+ * Main menu actions
+ */
+export enum MainMenuAction {
+  VIEW_CONFIG = 'view',
+  INSTALL_MODIFY = 'install',
+  REMOVE = 'remove',
+  EXIT = 'exit',
+}
+
 
 /**
  * Structure of a Claude hook configuration
@@ -108,6 +120,27 @@ export interface HookConfiguration {
   notificationWithSound: boolean;
   stopEnabled: boolean;
   stopWithSound: boolean;
+}
+
+/**
+ * Current configuration status information
+ */
+export interface ConfigurationStatus {
+  hasHooks: boolean;
+  installedHooks: string[];
+  notifications: {
+    enabled: boolean;
+    hasSound: boolean;
+  };
+  stop: {
+    enabled: boolean;
+    hasSound: boolean;
+  };
+  platform: {
+    name: string;
+    soundSupported: boolean;
+  };
+  settingsPath: string;
 }
 
 /**

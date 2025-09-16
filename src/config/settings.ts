@@ -2,10 +2,13 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import path from 'path';
 import { homedir } from 'os';
 import { SettingsError } from '../utils/errors.js';
+import { getCurrentPlatform, isSoundSupported } from '../platforms/index.js';
 import {
   ClaudeSettingsData,
   ClaudeHooks,
   SettingsOperation,
+  ConfigurationStatus,
+  Platform,
 } from '../types/index.js';
 
 /**
@@ -271,5 +274,219 @@ export class ClaudeSettings {
    */
   getPath(): string {
     return this.path;
+  }
+
+  /**
+   * Remove specific hooks from settings
+   * @param hookNames - Array of hook names to remove
+   */
+  async removeHooks(hookNames: string[]): Promise<void> {
+    if (!this._loaded) {
+      await this.load();
+    }
+
+    if (!Array.isArray(hookNames)) {
+      throw new SettingsError(
+        'hookNames must be an array',
+        SettingsOperation.REMOVE_HOOKS,
+        this.path,
+        { hookNames }
+      );
+    }
+
+    if (!this.data!.hooks) {
+      // No hooks to remove
+      return;
+    }
+
+    // Remove specified hooks
+    for (const hookName of hookNames) {
+      if (this.data!.hooks[hookName]) {
+        delete this.data!.hooks[hookName];
+      }
+    }
+
+    // Clean up empty hooks object
+    if (Object.keys(this.data!.hooks).length === 0) {
+      delete this.data!.hooks;
+    }
+
+    this._validateSettings(this.data!);
+  }
+
+  /**
+   * Remove all hooks from settings
+   */
+  async removeAllHooks(): Promise<void> {
+    if (!this._loaded) {
+      await this.load();
+    }
+
+    if (this.data!.hooks) {
+      delete this.data!.hooks;
+    }
+
+    this._validateSettings(this.data!);
+  }
+
+  /**
+   * Check if any hooks are installed
+   * @returns True if hooks exist
+   */
+  hasHooks(): boolean {
+    if (!this._loaded) {
+      throw new SettingsError(
+        'Settings not loaded. Call load() first.',
+        SettingsOperation.GET_HOOKS,
+        this.path
+      );
+    }
+    return Boolean(this.data!.hooks && Object.keys(this.data!.hooks).length > 0);
+  }
+
+  /**
+   * Get list of installed hook names
+   * @returns Array of hook names
+   */
+  getInstalledHookNames(): string[] {
+    if (!this._loaded) {
+      throw new SettingsError(
+        'Settings not loaded. Call load() first.',
+        SettingsOperation.GET_HOOKS,
+        this.path
+      );
+    }
+    return this.data!.hooks ? Object.keys(this.data!.hooks) : [];
+  }
+
+  /**
+   * Check if specific hook is installed
+   * @param hookName - Name of the hook to check
+   * @returns True if hook exists
+   */
+  hasHook(hookName: string): boolean {
+    if (!this._loaded) {
+      throw new SettingsError(
+        'Settings not loaded. Call load() first.',
+        SettingsOperation.GET_HOOKS,
+        this.path
+      );
+    }
+    return this.data!.hooks ? hookName in this.data!.hooks : false;
+  }
+
+  /**
+   * Analyze current configuration and return status
+   * @returns Configuration status information
+   */
+  async analyzeConfiguration(): Promise<ConfigurationStatus> {
+    if (!this._loaded) {
+      await this.load();
+    }
+
+    const installedHooks = this.getInstalledHookNames();
+    const hasHooks = installedHooks.length > 0;
+
+    // Analyze notification hook
+    const notifications = {
+      enabled: this.hasHook('Notification'),
+      hasSound: false,
+    };
+
+    if (notifications.enabled) {
+      notifications.hasSound = this._detectSoundInHook('Notification');
+    }
+
+    // Analyze stop hook
+    const stop = {
+      enabled: this.hasHook('Stop'),
+      hasSound: false,
+    };
+
+    if (stop.enabled) {
+      stop.hasSound = this._detectSoundInHook('Stop');
+    }
+
+    // Get platform information
+    let platformName = 'Unknown';
+    let soundSupported = false;
+
+    try {
+      const currentPlatform = getCurrentPlatform();
+      soundSupported = isSoundSupported();
+
+      switch (currentPlatform) {
+        case Platform.MACOS:
+          platformName = 'macOS';
+          break;
+        case Platform.WINDOWS:
+          platformName = 'Windows';
+          break;
+        default:
+          platformName = 'Unknown';
+      }
+    } catch {
+      // Platform detection failed, keep defaults
+    }
+
+    return {
+      hasHooks,
+      installedHooks,
+      notifications,
+      stop,
+      platform: {
+        name: platformName,
+        soundSupported,
+      },
+      settingsPath: this.path,
+    };
+  }
+
+  /**
+   * Detect if a specific hook has sound functionality
+   * @param hookName - Name of the hook to check
+   * @returns True if hook contains sound commands
+   * @private
+   */
+  private _detectSoundInHook(hookName: string): boolean {
+    if (!this.data!.hooks || !this.data!.hooks[hookName]) {
+      return false;
+    }
+
+    const hookGroups = this.data!.hooks[hookName];
+    if (!hookGroups || hookGroups.length === 0) {
+      return false;
+    }
+
+    // Check all hooks in all groups for sound indicators
+    for (const group of hookGroups) {
+      if (group.hooks) {
+        for (const hook of group.hooks) {
+          if (hook.command && this._containsSoundCommand(hook.command)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Check if a command contains sound functionality
+   * @param command - Command string to check
+   * @returns True if command contains sound
+   * @private
+   */
+  private _containsSoundCommand(command: string): boolean {
+    // Check for macOS sound patterns
+    if (command.includes('sound name') || command.includes('with sound')) {
+      return true;
+    }
+
+    // Add patterns for other platforms if needed in the future
+    // Windows currently doesn't support sound
+
+    return false;
   }
 }

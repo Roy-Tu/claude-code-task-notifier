@@ -7,6 +7,8 @@ import {
   ValidationResult,
   HookConfiguration,
   PromptChoice,
+  MainMenuAction,
+  ConfigurationStatus,
 } from '../types/index.js';
 
 /**
@@ -17,20 +19,7 @@ function getNotificationChoices(): (Separator | PromptChoice)[] {
   return [
     new Separator(),
     new Separator('Select Notification Types'),
-    { name: 'Notify on task completion', value: HookSelection.ON_NOTIFICATION, checked: true },
-    { name: 'Notify on task stop', value: HookSelection.ON_STOP },
-  ];
-}
-
-/**
- * Get notification type choices (public access for confirmation)
- * @returns Array of notification type choices
- */
-export function getNotificationTypeChoices(): (Separator | PromptChoice)[] {
-  return [
-    new Separator(),
-    new Separator('Select Notification Types'),
-    { name: 'Notify on task completion', value: HookSelection.ON_NOTIFICATION, checked: true },
+    { name: 'Notify on task completion', value: HookSelection.ON_NOTIFICATION },
     { name: 'Notify on task stop', value: HookSelection.ON_STOP },
   ];
 }
@@ -247,4 +236,150 @@ export function parseHookSelection(selectedHooks: HookSelection[]): HookConfigur
     stopEnabled: selectedHooks.includes(HookSelection.ON_STOP),
     stopWithSound: selectedHooks.includes(HookSelection.ON_STOP_SOUND),
   };
+}
+
+/**
+ * Show main menu for application actions
+ * @returns Selected main menu action
+ * @throws UserCancelledError if user cancels the operation
+ */
+export async function promptMainMenu(): Promise<MainMenuAction> {
+  const choices = [
+    new Separator(),
+    { name: '📋 View Current Configuration', value: MainMenuAction.VIEW_CONFIG },
+    { name: '⚙️ Install Notifications', value: MainMenuAction.INSTALL_MODIFY },
+    { name: '🗑️ Remove Notifications', value: MainMenuAction.REMOVE },
+    { name: '❌ Exit', value: MainMenuAction.EXIT },
+    new Separator(),
+  ];
+
+  try {
+    const action = await select({
+      message: 'Please select an action (Press <enter> to confirm)',
+      choices,
+      pageSize: 10,
+      loop: false,
+    });
+
+    return action as MainMenuAction;
+  } catch (error) {
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ExitPromptError') {
+      throw new UserCancelledError('Main menu cancelled');
+    }
+    throw error;
+  }
+}
+
+/**
+ * Display current configuration status
+ * @param config - Configuration status to display
+ */
+export function displayConfiguration(config: ConfigurationStatus): void {
+  console.log('\n📋 Current Configuration Status:');
+  console.log('─'.repeat(50));
+
+  if (!config.hasHooks) {
+    console.log('❌ No notification hooks installed');
+  } else {
+    console.log('✅ Installed hooks:');
+
+    if (config.notifications.enabled) {
+      const soundText = config.notifications.hasSound ? ' (with sound 🔔)' : ' (silent)';
+      console.log(`   • Task completion notification${soundText}`);
+    }
+
+    if (config.stop.enabled) {
+      const soundText = config.stop.hasSound ? ' (with sound 🔔)' : ' (silent)';
+      console.log(`   • Task stop notification${soundText}`);
+    }
+  }
+
+  console.log(`\n🖥️ Platform: ${config.platform.name}`);
+  console.log(`🔊 Sound Support: ${config.platform.soundSupported ? 'Yes' : 'No'}`);
+  console.log(`📁 Settings File: ${config.settingsPath}`);
+  console.log('─'.repeat(50));
+}
+
+/**
+ * Prompt for removal selection
+ * @param installedHooks - Array of currently installed hook names
+ * @returns Array of selected hook names to remove
+ * @throws UserCancelledError if user cancels the operation
+ */
+export async function promptRemovalSelection(installedHooks: string[]): Promise<string[]> {
+  if (installedHooks.length === 0) {
+    throw new UserCancelledError('No hooks installed to remove');
+  }
+
+  const choices = [
+    new Separator(),
+    new Separator('Select notification types to remove'),
+    ...installedHooks.map(hookName => ({
+      name: hookName === 'Notification' ? 'Task completion notification' : 'Task stop notification',
+      value: hookName,
+      checked: false,
+    })),
+  ];
+
+  try {
+    const selectedRemovals = await checkbox({
+      message: 'Select notifications to remove (Press <space> to toggle, <enter> to confirm)',
+      choices,
+      theme: {
+        helpMode: 'never',
+      },
+      loop: false,
+      pageSize: 10,
+    }) as string[];
+
+    if (selectedRemovals.length === 0) {
+      throw new UserCancelledError('No items selected for removal');
+    }
+
+    return selectedRemovals;
+  } catch (error) {
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ExitPromptError') {
+      throw new UserCancelledError('Removal selection cancelled');
+    }
+    throw error;
+  }
+}
+
+/**
+ * Show confirmation prompt for removal
+ * @param hooksToRemove - Array of hook names to be removed
+ * @returns True if user confirms removal
+ * @throws UserCancelledError if user cancels the operation
+ */
+export async function promptRemovalConfirmation(hooksToRemove: string[]): Promise<boolean> {
+  const hookDisplayNames = hooksToRemove.map(hookName =>
+    hookName === 'Notification' ? 'Task completion notification' : 'Task stop notification'
+  );
+
+  const choices = [
+    new Separator(),
+    new Separator('⚠️ Confirm Removal'),
+    ...hookDisplayNames.map(name => new Separator(`  • ${name}`)),
+    new Separator(),
+    new Separator('This action cannot be undone!'),
+    new Separator(),
+    { name: '✅ Yes, remove these notifications', value: 'confirm' },
+    { name: '❌ Cancel', value: 'cancel' },
+  ];
+
+  try {
+    const result = await select({
+      message: 'Are you sure you want to proceed?',
+      choices,
+      pageSize: 15,
+      loop: false,
+    });
+
+    return result === 'confirm';
+  } catch (error) {
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ExitPromptError') {
+      throw new UserCancelledError('Removal confirmation cancelled');
+    }
+    throw error;
+  }
 }
