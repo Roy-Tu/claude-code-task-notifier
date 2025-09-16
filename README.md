@@ -35,19 +35,33 @@ Get instant native desktop notifications when Claude Code tasks finish or stop. 
 
 ## ⚡ Quick Start
 
-```bash
-# Install dependencies
-npm install
+The easiest way to get started is by using `npx`. This will run the interactive setup without needing to clone or install anything.
 
-# Build and run
-npm run build && npm start
+Open your terminal and run:
+```bash
+npx claude-code-task-notifier
 ```
 
-**Or clone and setup:**
+That's it! The tool will guide you through the rest.
+
+---
+
+## 💻 For Developers (Running from Source)
+
+If you'd like to run the tool from the source code or contribute to development:
+
 ```bash
+# 1. Clone the repository
 git clone https://github.com/Roy-Tu/claude-code-task-notifier.git
+
+# 2. Navigate into the directory
 cd claude-code-task-notifier
-npm install && npm start
+
+# 3. Install dependencies
+npm install
+
+# 4. Run the application
+npm start
 ```
 
 ---
@@ -123,8 +137,6 @@ The tool safely updates your Claude Code `settings.json` with the notification h
 
 ## 📚 Documentation
 
-- **[🔧 Contributing Guide](docs/CONTRIBUTING.md)** - How to contribute to the project
-- **[🚨 Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
 - **[🏗️ Architecture](docs/ARCHITECTURE.md)** - Technical implementation details
 - **[💻 Development](docs/DEVELOPMENT.md)** - Local development setup
 
@@ -152,7 +164,7 @@ The tool safely updates your Claude Code `settings.json` with the notification h
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](docs/CONTRIBUTING.md) for details.
+We welcome contributions!
 
 **Quick ways to help:**
 - 🐛 [Report bugs](https://github.com/Roy-Tu/claude-code-task-notifier/issues)
