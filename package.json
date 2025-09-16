@@ -1,6 +1,6 @@
 {
   "name": "claude-code-task-notifier",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Modern TypeScript CLI tool for Claude Code task notifications with enhanced security and type safety. Cross-platform support for macOS and Windows.",
   "main": "dist/index.js",
   "type": "module",
