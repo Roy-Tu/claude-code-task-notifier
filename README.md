@@ -1,38 +1,133 @@
 # Claude Code Task Notifier
 
-A simple CLI to set up native desktop notifications for Claude Code tasks (e.g., completion, stop). Cross-platform and easy to use.
+A robust CLI tool to set up native desktop notifications for Claude Code tasks (completion, stop). Cross-platform with enhanced security and modular architecture.
 
 ## Usage
 
-You can run this tool using `npx` for a zero-installation setup.
+You can run this tool using `npx` for a zero-installation setup:
 
 ```bash
 npx claude-code-task-notifier
+```
+
+Or run locally:
+
+```bash
+npm start
+# or
+node index.js
 ```
 
 This will open an interactive setup process to configure your notification hooks.
 
 ## Features
 
--   **Cross-Platform:** Supports native notifications on macOS and Windows.
--   **Simple Interface:** A minimal, interactive CLI to get you set up in seconds.
--   **Zero-Install:** Uses `npx` to run without needing a global installation.
+- **Cross-Platform:** Native notifications on macOS and Windows
+- **Secure:** Input sanitization and command validation prevent injection attacks
+- **Modular Architecture:** Clean, maintainable codebase with separation of concerns
+- **Error Handling:** Comprehensive error recovery with user-friendly messages
+- **Interactive CLI:** Intuitive setup process with confirmation prompts
 
 ## How it Works
 
-The tool detects your operating system and adds the appropriate hook commands to your Claude Code `settings.json` file.
+The tool detects your operating system and generates secure, validated notification commands that are added to your Claude Code `settings.json` file.
 
--   **macOS:** Uses `osascript` to display native notifications.
--   **Windows:** Uses a built-in PowerShell script to display a native balloon tip notification from the system tray.
+### Platform Support
 
-The configuration file is typically located at:
--   **Windows:** `%USERPROFILE%\.claude\settings.json`
--   **macOS/Linux:** `~/.claude/settings.json`
+- **macOS:** Uses `osascript` to display native notifications with optional sound
+- **Windows:** Uses PowerShell with `System.Windows.Forms.NotifyIcon` for balloon tip notifications
+
+### Configuration File Location
+
+- **Windows:** `%USERPROFILE%\.claude\settings.json`
+- **macOS/Linux:** `~/.claude/settings.json`
+
+## Architecture
+
+The application follows a modular architecture for maintainability and extensibility:
+
+```
+├── index.js                 # Main application entry point
+├── src/
+│   ├── platforms/           # Platform-specific notification implementations
+│   │   ├── base.js         # Abstract platform interface
+│   │   ├── macos.js        # macOS osascript implementation
+│   │   ├── windows.js      # Windows PowerShell implementation
+│   │   └── index.js        # Platform registry and factory
+│   ├── config/
+│   │   └── settings.js     # Claude settings file management
+│   ├── cli/
+│   │   ├── terminal.js     # Terminal management and display
+│   │   └── prompts.js      # Interactive prompt logic
+│   └── utils/
+│       ├── errors.js       # Structured error handling
+│       └── validation.js   # Security validation utilities
+```
+
+### Key Components
+
+- **Platform Registry:** Extensible system for adding new notification platforms
+- **Settings Manager:** Safe reading/writing of Claude configuration with validation
+- **Security Layer:** Multiple validation layers prevent command injection
+- **Error Handling:** Structured error classes with graceful recovery
+- **Terminal Management:** Proper alternate screen buffer handling
+
+## Security Features
+
+- **Input Sanitization:** All user inputs are sanitized before use in commands
+- **Command Validation:** Generated commands are validated against known safe patterns
+- **Platform-Specific Security:** Each platform has tailored security checks
+- **No Code Injection:** Strict validation prevents execution of malicious code
 
 ## Development
 
-To run the tool locally:
+### Setup
 
-1.  Clone the repository.
-2.  Install dependencies: `npm install`
-3.  Run the tool: `npm start`
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Run the tool: `npm start`
+
+### Testing
+
+Check syntax of all modules:
+```bash
+node --check index.js
+node --check src/platforms/*.js
+node --check src/config/*.js
+node --check src/cli/*.js
+node --check src/utils/*.js
+```
+
+### Adding New Platforms
+
+To add support for a new platform:
+
+1. Create a new platform class extending `NotificationPlatform` in `src/platforms/`
+2. Implement required methods: `isSupported()`, `getPlatformId()`, `createCommand()`, `validate()`
+3. Register the platform in `src/platforms/index.js`
+
+Example:
+```javascript
+import { NotificationPlatform } from './base.js';
+
+export class LinuxPlatform extends NotificationPlatform {
+    static isSupported() {
+        return platform() === 'linux';
+    }
+
+    static createCommand(action, withSound) {
+        // Implementation for Linux notifications
+    }
+
+    // ... other required methods
+}
+```
+
+## Contributing
+
+This project follows clean architecture principles. When contributing:
+
+- Maintain separation of concerns
+- Add appropriate validation and error handling
+- Follow security best practices
+- Update tests and documentation
