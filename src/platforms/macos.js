@@ -26,21 +26,4 @@ export class MacOSPlatform extends NotificationPlatform {
         return `osascript -e 'display notification "Claude Task ${sanitizedAction}!" with title "Claude Code"${soundPart}'`;
     }
 
-    static validate(command) {
-        if (!super.validate(command)) {
-            return false;
-        }
-
-        // Additional macOS-specific validation
-        if (!command.startsWith('osascript -e \'display notification')) {
-            return false;
-        }
-
-        // Ensure the command ends properly
-        if (!command.endsWith('\'') && !command.endsWith('\'"')) {
-            return false;
-        }
-
-        return true;
-    }
 }

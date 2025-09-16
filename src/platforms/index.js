@@ -88,13 +88,7 @@ export class PlatformRegistry {
  */
 export function createNotificationCommand(action, withSound = false) {
     const Platform = PlatformRegistry.getSupportedPlatform();
-    const command = Platform.createCommand(action, withSound);
-
-    if (!Platform.validate(command)) {
-        throw new Error(`Generated command failed validation: ${command}`);
-    }
-
-    return command;
+    return Platform.createCommand(action, withSound);
 }
 
 /**

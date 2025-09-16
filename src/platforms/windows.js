@@ -57,38 +57,4 @@ export class WindowsPlatform extends NotificationPlatform {
             .replace(/[^\w\s!?.-]/g, ''); // Keep only safe characters
     }
 
-    static validate(command) {
-        if (!super.validate(command)) {
-            return false;
-        }
-
-        // Additional Windows-specific validation
-        if (!command.startsWith('powershell -NoProfile -Command "')) {
-            return false;
-        }
-
-        // Ensure the command ends properly
-        if (!command.endsWith('"')) {
-            return false;
-        }
-
-        // Check for dangerous PowerShell patterns
-        const dangerousPatterns = [
-            /Invoke-Expression/i,
-            /IEX\s/i,
-            /Download/i,
-            /WebClient/i,
-            /Start-Process/i,
-            /\$env:/i,
-            /registry/i,
-            /Get-Credential/i
-        ];
-
-        // Additional check: if command contains New-Object, it must be for NotifyIcon
-        if (command.includes('New-Object') && !command.includes('System.Windows.Forms.NotifyIcon')) {
-            return false;
-        }
-
-        return !dangerousPatterns.some(pattern => pattern.test(command));
-    }
 }

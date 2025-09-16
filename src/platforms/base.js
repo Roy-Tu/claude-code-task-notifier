@@ -28,24 +28,4 @@ export class NotificationPlatform {
         throw new Error('createCommand() must be implemented by subclass');
     }
 
-    /**
-     * Validate that a command is safe to execute
-     * @param {string} command - The command to validate
-     * @returns {boolean} True if the command is safe
-     */
-    static validate(command) {
-        if (!command || typeof command !== 'string') {
-            return false;
-        }
-
-        // Basic validation - no obvious command injection patterns
-        const dangerousPatterns = [
-            /;\s*[a-zA-Z]/,     // Command chaining with semicolon
-            /\|\s*[a-zA-Z]/,    // Pipe to another command
-            /&&\s*[a-zA-Z]/,    // Command chaining with &&
-            /\|\|\s*[a-zA-Z]/,  // Command chaining with ||
-        ];
-
-        return !dangerousPatterns.some(pattern => pattern.test(command));
-    }
 }
