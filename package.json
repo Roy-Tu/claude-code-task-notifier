@@ -1,25 +1,31 @@
 {
   "name": "claude-code-task-notifier",
   "version": "1.0.0",
-  "description": "A simple CLI to set up native desktop notifications for Claude Code tasks (e.g., completion, stop). Cross-platform and easy to use.",
-  "main": "index.js",
+  "description": "Modern TypeScript CLI tool for Claude Code task notifications with enhanced security and type safety. Cross-platform support for macOS and Windows.",
+  "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "claude-task-notifier": "index.js"
+    "claude-task-notifier": "dist/index.js"
   },
   "scripts": {
-    "start": "node index.js",
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "npm run build && node dist/index.js",
+    "clean": "rimraf dist",
+    "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "claude",
     "ai",
+    "typescript",
     "developer-tools",
     "dev-tools",
     "hooks",
     "notifications",
     "notifier",
-    "cli"
+    "cli",
+    "cross-platform"
   ],
   "author": "",
   "license": "ISC",
@@ -33,5 +39,10 @@
   "homepage": "https://github.com/YOUR_USERNAME/claude-code-task-notifier#readme",
   "dependencies": {
     "@inquirer/prompts": "^5.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "rimraf": "^5.0.0",
+    "typescript": "^5.3.0"
   }
 }

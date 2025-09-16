@@ -59,3 +59,12 @@ logs
 # Temporary folders
 tmp/
 temp/
+
+# TypeScript
+dist/
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Build artifacts
+build/
+out/

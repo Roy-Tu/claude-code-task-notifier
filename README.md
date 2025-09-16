@@ -1,32 +1,47 @@
-# Claude Code Task Notifier
+# Claude Code Hook Notifier
 
-A robust CLI tool to set up native desktop notifications for Claude Code tasks (completion, stop). Cross-platform with enhanced security and modular architecture.
+A modern TypeScript CLI tool that sets up native desktop notifications for Claude Code task events. Features a robust modular architecture with enhanced security, comprehensive error handling, and cross-platform support.
 
-## Usage
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-43853D?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
-You can run this tool using `npx` for a zero-installation setup:
+## 🚀 Quick Start
 
-```bash
-npx claude-code-task-notifier
-```
-
-Or run locally:
+### Installation & Usage
 
 ```bash
+# Install dependencies
+npm install
+
+# Build the TypeScript project
+npm run build
+
+# Run the interactive CLI
 npm start
-# or
-node index.js
 ```
 
-This will open an interactive setup process to configure your notification hooks.
+### Development Mode
 
-## Features
+```bash
+# Watch mode with auto-recompilation
+npm run dev
 
-- **Cross-Platform:** Native notifications on macOS and Windows
-- **Secure:** Input sanitization for safe command generation
-- **Modular Architecture:** Clean, maintainable codebase with separation of concerns
-- **Error Handling:** Comprehensive error recovery with user-friendly messages
-- **Interactive CLI:** Intuitive setup process with confirmation prompts
+# Type checking only
+npm run typecheck
+```
+
+This opens an interactive setup process to configure your notification hooks with full type safety.
+
+## ✨ Features
+
+- **🔷 TypeScript First:** Full type safety with strict TypeScript configuration
+- **🖥️ Cross-Platform:** Native notifications on macOS and Windows
+- **🛡️ Enhanced Security:** Input sanitization and safe command generation
+- **🏗️ Modern Architecture:** Clean, modular codebase with enum structures
+- **🔄 Error Recovery:** Comprehensive error handling with user-friendly messages
+- **🎛️ Interactive CLI:** Intuitive setup process with confirmation prompts
+- **📦 Modern Build System:** TypeScript compilation with watch mode support
 
 ## How it Works
 
@@ -42,34 +57,29 @@ The tool detects your operating system and generates secure notification command
 - **Windows:** `%USERPROFILE%\.claude\settings.json`
 - **macOS/Linux:** `~/.claude/settings.json`
 
-## Architecture
+## 🏗️ Architecture
 
-The application follows a modular architecture for maintainability and extensibility:
+Modern TypeScript architecture with enhanced type safety:
 
 ```
-├── index.js                 # Main application entry point
+├── index.ts                 # Main TypeScript entry point
+├── dist/                    # Compiled JavaScript output
 ├── src/
-│   ├── platforms/           # Platform-specific notification implementations
-│   │   ├── base.js         # Abstract platform interface
-│   │   ├── macos.js        # macOS osascript implementation
-│   │   ├── windows.js      # Windows PowerShell implementation
-│   │   └── index.js        # Platform registry and factory
-│   ├── config/
-│   │   └── settings.js     # Claude settings file management
-│   ├── cli/
-│   │   ├── terminal.js     # Terminal management and display
-│   │   └── prompts.js      # Interactive prompt logic
-│   └── utils/
-│       └── errors.js       # Structured error handling
+│   ├── types/              # Central type definitions & enums
+│   ├── platforms/          # Platform implementations (.ts)
+│   ├── config/             # Settings management
+│   ├── cli/                # CLI components
+│   └── utils/              # Error handling & utilities
+└── docs/                   # Documentation
 ```
 
-### Key Components
+### Key TypeScript Features
 
-- **Platform Registry:** Extensible system for adding new notification platforms
-- **Settings Manager:** Safe reading/writing of Claude configuration with validation
-- **Security Layer:** Input sanitization for safe command generation
-- **Error Handling:** Structured error classes with graceful recovery
-- **Terminal Management:** Proper alternate screen buffer handling
+- **🔷 Strict Type Safety:** Full TypeScript with strict mode enabled
+- **📋 Enum Structures:** Type-safe actions, platforms, and error codes
+- **🏭 Abstract Classes:** Clean inheritance with proper override decorators
+- **🛡️ Type Guards:** Runtime type validation with compile-time safety
+- **📦 Modern Build:** ES2022 target with ESNext modules
 
 ## Security Features
 
@@ -78,43 +88,47 @@ The application follows a modular architecture for maintainability and extensibi
 - **Platform-Specific Security:** Each platform implements appropriate sanitization
 - **No Code Injection:** Commands are generated by our code, not user input
 
-## Development
+## 🛠️ Development
 
-### Setup
+### Build Commands
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Run the tool: `npm start`
+| Command | Description |
+|---------|-------------|
+| `npm run build` | Compile TypeScript to JavaScript |
+| `npm run dev` | Watch mode - recompile on changes |
+| `npm run typecheck` | Type checking without compilation |
+| `npm run clean` | Remove dist/ folder |
+| `npm start` | Run the compiled application |
 
-### Testing
+### TypeScript Setup
 
-Check syntax of all modules:
-```bash
-node --check index.js
-node --check src/platforms/*.js
-node --check src/config/*.js
-node --check src/cli/*.js
-node --check src/utils/*.js
-```
+The project uses strict TypeScript configuration:
+- **Target:** ES2022 with ESNext modules
+- **Strict Mode:** All strict checks enabled
+- **Declaration Maps:** Full source map support
+- **Module Resolution:** Node16 for modern imports
+
+See [`docs/TYPESCRIPT_MIGRATION.md`](./docs/TYPESCRIPT_MIGRATION.md) for migration details.
 
 ### Adding New Platforms
 
-To add support for a new platform:
+Extend the type-safe platform system:
 
-1. Create a new platform class extending `NotificationPlatform` in `src/platforms/`
-2. Implement required methods: `isSupported()`, `getPlatformId()`, `createCommand()`
-3. Register the platform in `src/platforms/index.js`
-
-Example:
-```javascript
+```typescript
+// src/platforms/linux.ts
 import { NotificationPlatform } from './base.js';
+import { Platform } from '../types/index.js';
 
 export class LinuxPlatform extends NotificationPlatform {
-    static isSupported() {
-        return platform() === 'linux';
+    override isSupported(): boolean {
+        return process.platform === 'linux';
     }
 
-    static createCommand(action, withSound) {
+    override getPlatformId(): Platform {
+        return Platform.LINUX;
+    }
+
+    override createCommand(action: HookAction, withSound: boolean): string {
         // Implementation for Linux notifications
     }
 }
