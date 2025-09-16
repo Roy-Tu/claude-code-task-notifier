@@ -22,7 +22,7 @@ export class MacOSPlatform extends NotificationPlatform {
     // Sanitize the action for AppleScript
     const sanitizedAction = action.replace(/['"\\]/g, '\\$&');
 
-    const soundPart = withSound ? ' sound name "Ping"' : '';
+    const soundPart = withSound ? ' sound name "Glass"' : '';
 
     return `osascript -e 'display notification "Claude Task ${sanitizedAction}!" with title "Claude Code"${soundPart}'`;
   }
