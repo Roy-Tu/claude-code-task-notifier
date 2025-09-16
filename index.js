@@ -5,7 +5,6 @@ import { promptHookSelection, promptConfirmation, validateHookSelection, parseHo
 import { ClaudeSettings } from './src/config/settings.js';
 import { createNotificationCommand, isNotificationSupported } from './src/platforms/index.js';
 import { handleError, safeExit, UserCancelledError, UnsupportedPlatformError, InvalidInputError } from './src/utils/errors.js';
-import { ValidationUtils } from './src/utils/validation.js';
 
 /**
  * Main application function
@@ -63,7 +62,6 @@ async function generateHooks(config) {
 
     if (config.notificationEnabled) {
         try {
-            ValidationUtils.validateAction('Completed');
             const command = createNotificationCommand('Completed', config.notificationWithSound);
 
             newHooks.Notification = [
@@ -83,7 +81,6 @@ async function generateHooks(config) {
 
     if (config.stopEnabled) {
         try {
-            ValidationUtils.validateAction('Stopped');
             const command = createNotificationCommand('Stopped', config.stopWithSound);
 
             newHooks.Stop = [
