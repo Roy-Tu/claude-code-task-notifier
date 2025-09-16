@@ -147,9 +147,11 @@ async function handleInstallModify(): Promise<void> {
   const newHooks = await generateHooks(config);
 
   // Save to settings
+  console.log('');
   await saveHooksToSettings(newHooks);
 
   Terminal.printSuccess('Hooks installed successfully!');
+  console.log('');
 }
 
 /**
