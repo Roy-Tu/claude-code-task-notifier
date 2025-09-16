@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "claude-task-notifier": "dist/index.js"
+    "claude-code-task-notifier": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
@@ -27,16 +27,16 @@
     "cli",
     "cross-platform"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Roy-Tu",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YOUR_USERNAME/claude-code-task-notifier.git"
+    "url": "git+https://github.com/Roy-Tu/claude-code-task-notifier.git"
   },
   "bugs": {
-    "url": "https://github.com/YOUR_USERNAME/claude-code-task-notifier/issues"
+    "url": "https://github.com/Roy-Tu/claude-code-task-notifier/issues"
   },
-  "homepage": "https://github.com/YOUR_USERNAME/claude-code-task-notifier#readme",
+  "homepage": "https://github.com/Roy-Tu/claude-code-task-notifier#readme",
   "dependencies": {
     "@inquirer/prompts": "^5.0.5"
   },
