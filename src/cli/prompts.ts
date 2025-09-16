@@ -1,4 +1,4 @@
-import { checkbox, select, confirm, Separator } from '@inquirer/prompts';
+import { checkbox, select, Separator } from '@inquirer/prompts';
 import { UserCancelledError } from '../utils/errors.js';
 import { isSoundSupported } from '../platforms/index.js';
 import {
@@ -46,12 +46,17 @@ async function promptSoundPreference(selectedNotifications: HookSelection[]): Pr
   const message = `Add sound to ${notificationNames.join(' and ')} notification${notificationNames.length > 1 ? 's' : ''}?`;
 
   try {
-    return await confirm({
+    const result = await select({
       message,
+      choices: [
+        { name: '✅ Yes', value: true },
+        { name: '❌ No', value: false },
+      ],
       default: false,
     }, {
       clearPromptOnDone: true,
     });
+    return result;
   } catch (error) {
     if (error && typeof error === 'object' && 'name' in error && error.name === 'ExitPromptError') {
       throw new UserCancelledError('Sound preference cancelled');
@@ -148,11 +153,11 @@ export function generateConfirmationChoices(selectedHooks: HookSelection[]): (Se
     ...resultArray,
     new Separator(),
     {
-      name: 'Install Hook To Claude Code',
+      name: '⚙️  Install Hook To Claude Code',
       value: ConfirmationAction.INSTALL,
     },
     {
-      name: 'Exit',
+      name: '❌ Exit',
       value: ConfirmationAction.EXIT,
     },
   ];
@@ -247,8 +252,8 @@ export async function promptMainMenu(): Promise<MainMenuAction> {
   const choices = [
     new Separator(),
     { name: '📋 View Current Configuration', value: MainMenuAction.VIEW_CONFIG },
-    { name: '⚙️ Install Notifications', value: MainMenuAction.INSTALL_MODIFY },
-    { name: '🗑️ Remove Notifications', value: MainMenuAction.REMOVE },
+    { name: '⚙️  Install Notifications', value: MainMenuAction.INSTALL_MODIFY },
+    { name: '🗑️  Remove Notifications', value: MainMenuAction.REMOVE },
     { name: '❌ Exit', value: MainMenuAction.EXIT },
     new Separator(),
   ];
