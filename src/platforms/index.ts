@@ -109,3 +109,27 @@ export function createNotificationCommand(action: HookAction | string, withSound
 export function isNotificationSupported(): boolean {
   return PlatformRegistry.isAnyPlatformSupported();
 }
+
+/**
+ * Get the current platform ID
+ * @returns Current platform ID
+ * @throws Error if no supported platform is found
+ */
+export function getCurrentPlatform(): Platform {
+  const PlatformClass = PlatformRegistry.getSupportedPlatform();
+  return PlatformClass.getPlatformId();
+}
+
+/**
+ * Check if the current platform supports sound
+ * @returns True if sound is supported
+ */
+export function isSoundSupported(): boolean {
+  try {
+    const platform = getCurrentPlatform();
+    // Currently only macOS supports sound notifications
+    return platform === Platform.MACOS;
+  } catch {
+    return false;
+  }
+}
