@@ -1,0 +1,30 @@
+# Ignore source code
+src/
+
+# Ignore TypeScript config files
+tsconfig.json
+*.tsbuildinfo
+
+# Ignore project-specific dev folders
+.gemini/
+.spec-workflow/
+
+# Ignore common dev folders and files
+node_modules/
+.vscode/
+.idea/
+.git/
+.gitignore
+.npmignore
+
+# Ignore logs and temp files
+logs
+*.log
+npm-debug.log*
+
+# Ignore OS-generated files
+.DS_Store
+Thumbs.db
+
+# Ignore local environment files
+.env*
