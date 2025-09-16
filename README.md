@@ -14,7 +14,7 @@ Get instant native desktop notifications when Claude Code tasks finish or stop. 
 ## 🎬 See It In Action
 
 <div align="center">
-  <img src="docs/images/demo.gif" alt="Claude Code Task Notifier Demo" width="700" />
+  <img src="docs/images/demo-install.gif" alt="Claude Code Task Notifier Installation Demo" width="700" />
 </div>
 
 <!-- Placeholder for demo images -->
